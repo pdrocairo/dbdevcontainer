@@ -1,30 +1,38 @@
+-- 1. INSERT
+
+-- Tabela Pessoa
 insert into pessoa (cpf, email, nome, data_nasc, endereco, telefone)
 values ('002','pp@email.com', 'D Pedro I', '1479-01-10', 'R. Vasco', null),
 ('003', 'ps@email.com', 'Pedro II', '1516-02-10', 'R. Flamengo', '5501'),
 ('001', 'dj@email.com', 'D João VI', '1415-12-01', 'R. Portugal', null),
 ('004', 'jj@email.com', 'JJ Xavier', '1746-11-12', 'R. Minas', '5502');
 
+-- Tabela Paciente
 insert into paciente (cpf, senha, plano_saude)
 values ('002', 'senha1', FALSE),
 ('003', 'senha2', TRUE);
 
+-- Tabela Médico
 insert into medico(cpf, crm)
 values ('001', '111'),
 ('004', '112');
 
+-- Tabela Especialidade
 insert into especialidade(descricao)
 values ('Pediatra'),
 ('Cardiologista'),
 ('Ortopedista');
 
+-- Tabela MedicoEspecialidade
 insert into medico_especialidade(crm, id_especialidade)
 values ((select crm from medico where cpf = '001'), 01),
 ((select crm from medico where cpf = '004'), 02),
 ((select crm from medico where cpf = '004'), 03);
 
+-- Tabela Agendamento
 insert into agendamento(codigo_paciente, crm, dt_consulta, dt_agendamento, valor_consulta)
-values ((select codigo from paciente where cpf = '002'), 
-(select crm from medico where cpf = '001'), 
+values ((select codigo from paciente where cpf = '002'),
+(select crm from medico where cpf = '001'),
 '1782-04-14 16:00:00', '1782-03-14 10:04:45', 80),
 
 ((select codigo from paciente where cpf = '002'),
@@ -52,23 +60,30 @@ values ((select codigo from paciente where cpf = '002'),
 
 
 
+-- 2. UPDATE
+
+-- 2a
 update pessoa
 set data_nasc = '1416-12-01'
 where nome = 'D João VI';
 
+-- 2b
 update pessoa
 set telefone = '5503', email = 'pf@email.com'
 where nome = 'D Pedro I';
 
+-- 2c
 update pessoa
 set telefone = '9' || telefone
 where telefone is not null;
 
+-- 2d
 update agendamento
 set dt_consulta = dt_consulta + '2 days', valor_consulta = 150
 where dt_consulta::date = '1783-05-17';
 
 
+-- 2e
 update medico_especialidade
 set id_especialidade = 1
 where id_especialidade = 2 and crm = (
@@ -79,6 +94,9 @@ where id_especialidade = 2 and crm = (
     )
 );
 
+-- 3. DELETE
+
+-- 3a
 delete from agendamento
 where codigo_paciente = (
     select codigo from paciente
@@ -89,6 +107,7 @@ where codigo_paciente = (
 ) and dt_consulta::date = '1783-05-19';
 
 
+-- 3b
 delete from agendamento
 where crm = (
     select crm from medico
@@ -99,6 +118,7 @@ where crm = (
 ) and valor_consulta = 0;
 
 
+-- 3c
 delete from paciente
 where plano_saude = true
 or cpf = (
@@ -108,6 +128,7 @@ or cpf = (
 
 
 
+-- 3d
 delete from agendamento
 where crm = (
     select crm from medico
