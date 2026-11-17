@@ -9,7 +9,7 @@ CREATE TABLE pessoa (
 );
 
 CREATE TABLE paciente (
-  codigo INT PRIMARY KEY,
+  codigo INT GENERATED ALWAYS AS IDENTITY PRIMARY KEY,
   cpf CHAR(11) NOT NULL REFERENCES pessoa(cpf),
   senha VARCHAR(10) NOT NULL,
   plano_saude BOOLEAN NOT NULL
@@ -21,7 +21,7 @@ CREATE TABLE medico (
 );
 
 CREATE TABLE especialidade (
-  id INT PRIMARY KEY,
+  id INT GENERATED ALWAYS AS IDENTITY PRIMARY KEY,
   descricao VARCHAR(100) NOT NULL
 );
 
@@ -32,7 +32,7 @@ CREATE TABLE medico_especialidade (
 );
 
 CREATE TABLE agendamento (
-  codigo_paciente INT REFERENCES paciente(codigo),
+  codigo_paciente INT REFERENCES paciente(codigo) ON DELETE CASCADE,
   crm VARCHAR(10) REFERENCES medico(crm),
   dt_consulta TIMESTAMP,
   dt_agendamento TIMESTAMP NOT NULL,
